@@ -119,7 +119,7 @@ clfftStatus	clfftCreateDefaultPlan( clfftPlanHandle* plHandle, cl_context contex
 	fftPlan->forwardScale	= 1.0;
 	fftPlan->backwardScale	= 1.0 / static_cast< double >( lenX * lenY * lenZ );
 	fftPlan->batchsize		= 1;
-
+    fftPlan->type           = ENDTRANSFORMTYPE;
 	fftPlan->gen			= Stockham; //default setting
 
 	OPENCL_V(fftPlan->SetEnvelope(), _T("SetEnvelope failed"));
@@ -466,6 +466,11 @@ clfftStatus LoadCompiledKernels( const clfftPlanHandle plHandle, const clfftGene
 }
 #endif
 
+static clfftStatus clfftBakePlanR2R(FFTPlan *fftPlan)
+{
+    return CLFFT_NOTIMPLEMENTED;
+}
+
 clfftStatus	clfftBakePlan( clfftPlanHandle plHandle, cl_uint numQueues, cl_command_queue* commQueueFFT,
 							void (CL_CALLBACK *pfn_notify)( clfftPlanHandle plHandle, void *user_data ), void* user_data )
 {
@@ -493,6 +498,15 @@ clfftStatus	clfftBakePlan( clfftPlanHandle plHandle, cl_uint numQueues, cl_comma
 	{
 		return CLFFT_SUCCESS;
 	}
+
+    if ( (fftPlan->inputLayout != CLFFT_REAL) && (fftPlan->outputLayout != CLFFT_REAL) )
+    {
+        if (clfftBakePlanR2R(fftPlan) == CLFFT_SUCCESS)
+        {
+            fftPlan->baked = true;
+            return CLFFT_SUCCESS;
+        }
+    }
 
 	// Store the device for which we are baking
 	clGetCommandQueueInfo(*commQueueFFT, CL_QUEUE_DEVICE, sizeof(cl_device_id), &fftPlan->bakeDevice, NULL);

@@ -27,6 +27,21 @@
 
 using std::vector;
 
+static clfftStatus clfftEnqueueTransform(
+    FFTPlan *fftPlan,
+    cl_uint numQueuesAndEvents,
+    cl_command_queue* commQueues,
+    cl_uint numWaitEvents,
+    const cl_event* waitEvents,
+    cl_event* outEvents,
+    cl_mem* clInputBuffers,
+    cl_mem* clOutputBuffers,
+    cl_mem clTmpBuffers
+    )
+{
+    return CLFFT_NOTIMPLEMENTED;
+}
+
 clfftStatus clfftEnqueueTransform(
 											clfftPlanHandle plHandle,
 											clfftDirection dir,
@@ -72,6 +87,12 @@ clfftStatus clfftEnqueueTransform(
 	if(q_device != fftPlan->bakeDevice)
 		return CLFFT_DEVICE_MISMATCH;
 
+	if (fftPlan->inputLayout == CLFFT_REAL && fftPlan->outputLayout == CLFFT_REAL)
+    {
+        return clfftEnqueueTransformR2R(fftPlan, numQueuesAndEvents, commQueues,
+                                        numWaitEvents, waitEvents, outEvents,
+                                        clInputBuffers, clOutputBuffers, clTmpBuffrs);
+    }
 
 	if		(fftPlan->inputLayout == CLFFT_REAL)	dir = CLFFT_FORWARD;
 	else if	(fftPlan->outputLayout == CLFFT_REAL)	dir = CLFFT_BACKWARD;

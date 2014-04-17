@@ -181,6 +181,19 @@ typedef enum clfftResultLocation_
 	ENDPLACE				/*!< This value will always be last, and marks the length of clfftPlaceness. */
 } clfftResultLocation;
 
+typedef enum clfftTransformType_
+{
+    CLFFT_REAL_EVEN_00  = 10,       /*!< Real Even DFT (DCT) Type I */
+    CLFFT_REAL_EVEN_01   = 11,     /*!< Real Even DFT (DCT) Type II */
+    CLFFT_REAL_EVEN_10   = 12,     /*!< Real Even DFT (DCT) Type III */
+    CLFFT_REAL_EVEN_11   = 13,     /*!< Real Even DFT (DCT) Type IV */
+    CLFFT_REAL_ODD_00   = 20,        /*!< Real Even DFT (DST) Type I */
+    CLFFT_REAL_ODD_01    = 21,     /*!< Real Even DFT (DST) Type II */
+    CLFFT_REAL_ODD_10    = 22,     /*!< Real Even DFT (DST) Type III */
+    CLFFT_REAL_ODD_11    = 23,     /*!< Real Even DFT (DST) Type IV */
+    ENDTRANSFORMTYPE                                   /*!< This value will always be last, and marks the length of clfftTransformType. */
+} clfftRealTransformType;
+
 /*! @brief This determines whether the result is returned in original order. It is valid only for
 dimensions greater than 1. */
 typedef enum clfftResultTransposed_ {
@@ -510,6 +523,8 @@ extern "C" {
 	 *  @param[in] placeness Tells the FFT engine to clobber the input buffers or to expect output buffers for results
 	 */
 	CLFFTAPI clfftStatus	clfftSetResultLocation( clfftPlanHandle plHandle, clfftResultLocation placeness );
+	CLFFTAPI clfftStatus	clfftGetRealTransformType( clfftPlanHandle plHandle, clfftRealTransformType *type );
+	CLFFTAPI clfftStatus	clfftSetRealTransformType( clfftPlanHandle plHandle, clfftRealTransformType  type );
 
 	/*! @brief Retrieve the final transpose setting of a muti-dimensional FFT
 	 *  @details A multi-dimensional FFT typically transposes the data several times during calculation.  If the client

@@ -222,6 +222,7 @@ public:
 	double                  forwardScale, backwardScale;
 	size_t                  iDist, oDist;
 	size_t                  batchsize;
+    clfftRealTransformType  type;
 
 	// Note the device passed to BakePlan, assuming we are baking for one device
 	// TODO, change this logic for handling multiple GPUs/devices

@@ -824,3 +824,31 @@ clfftStatus clfftLocalMemSize( const clfftPlanHandle plHandle, cl_ulong* local_m
 	*local_mem_size = plan->envelope.limit_LocalMemSize;
 	return CLFFT_SUCCESS;
 }
+
+clfftStatus clfftGetRealTransformType( const clfftPlanHandle plHandle, clfftRealTransformType *type)
+{
+	FFTRepo& fftRepo	= FFTRepo::getInstance( );
+	FFTPlan* fftPlan	= NULL;
+	lockRAII* planLock	= NULL;
+
+	OPENCL_V( fftRepo.getPlan( plHandle, fftPlan, planLock ), _T( "fftRepo.getPlan failed" ) );
+	scopedLock sLock( *planLock, _T( "clfftGetRealTransformType" ) );
+
+    *type = (fftPlan->type);
+
+	return CLFFT_SUCCESS;
+}
+
+clfftStatus clfftSetRealTransformType( const clfftPlanHandle plHandle, clfftRealTransformType type)
+{
+	FFTRepo& fftRepo	= FFTRepo::getInstance( );
+	FFTPlan* fftPlan	= NULL;
+	lockRAII* planLock	= NULL;
+
+	OPENCL_V( fftRepo.getPlan( plHandle, fftPlan, planLock ), _T( "fftRepo.getPlan failed" ) );
+	scopedLock sLock( *planLock, _T( "clfftsetRealTransformType" ) );
+
+    fftPlan->type = type;
+
+	return CLFFT_SUCCESS;
+}
